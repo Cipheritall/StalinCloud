@@ -1,2 +1,4 @@
 version: v0.1
 owner: Rick
+db: db/photos.db
+media_path: /media/sdcard/stalinCloud

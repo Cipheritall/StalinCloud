@@ -5,7 +5,7 @@ import logging
 DATABASE_FILE = "./db/photos.db"
 
 
-def create_database():
+def create_database(DATABASE_FILE):
     try:
         conn = sqlite3.connect(DATABASE_FILE)
         cursor = conn.cursor()
@@ -42,11 +42,11 @@ def add_new_photo(photo_info):
                     downloaded_time, local_path, productUrl, baseUrl, mimeType
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                photo_info.get("google_id", None),
+                photo_info.get("id", None),
                 photo_info.get("album", None),
                 photo_info.get("owner", None),
                 photo_info.get("filename", None),
-                photo_info.get("created_time", None),
+                photo_info["mediaMetadata"].get("creationTime", None),
                 photo_info.get("downloaded_time", None),
                 photo_info.get("local_path", None),
                 photo_info.get("productUrl", None),
@@ -54,7 +54,7 @@ def add_new_photo(photo_info):
                 photo_info.get("mimeType", None),
             ))
             conn.commit()
-            logging.info(f"Photo added successfully {photo_info['google_id']}.")
+            logging.info(f"Photo added successfully {photo_info['id']}.")
     except Exception as e:
         logging.error(f"Error adding photo to the database: {str(e)}")
 
