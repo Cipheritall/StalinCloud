@@ -22,11 +22,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.sync:
+    if int(args.sync)>1:
         db.create_photos_database()
         service = Google.Create_Service()
 
-        Google.sync_photos(service,target_num=100)
+        Google.sync_photos(service,target_num=int(args.sync))
 
     if args.move:
         api.move_all_photos()
