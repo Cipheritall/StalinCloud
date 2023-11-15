@@ -51,8 +51,7 @@ def Create_Service():
     except Exception as e:
         print(e)
     
-    logging.info(cred_data)
-    logging.info(f"is valid : {cred.valid}")
+    logging.info(f"cred_data validity : {cred.valid}")
     return None
 
 
