@@ -10,6 +10,9 @@ from download import download_file,download_photo,download_video
 import db
 from config import CONFIG
 
+# Configure the logging module
+logger = logging.getLogger(__name__)
+
 API_SERVICE_NAME = 'photoslibrary'
 API_VERSION = 'v1'
 CLIENT_SECRET_FILE = './keys/client_secret.json'
@@ -19,7 +22,7 @@ SCOPES = ['https://www.googleapis.com/auth/photoslibrary',
 def Create_Service():
     cred = None
     json_file = f'./keys/token_{API_SERVICE_NAME}_{API_VERSION}.json'
-    logging.info(f"Using token {json_file}")
+    logger.info(f"Using token {json_file}")
     if os.path.exists(json_file):
         with open(json_file, 'r') as token:
             cred_data = json.load(token)
@@ -46,12 +49,12 @@ def Create_Service():
 
     try:
         service = build(API_SERVICE_NAME, API_VERSION, credentials=cred,static_discovery=False)
-        logging.info(API_SERVICE_NAME, 'service created successfully')
+        logger.info(API_SERVICE_NAME, 'service created successfully')
         return service
     except Exception as e:
         print(e)
     
-    logging.info(f"cred_data validity : {cred.valid}")
+    logger.info(f"cred_data validity : {cred.valid}")
     return None
 
 
@@ -95,7 +98,7 @@ def photos_round(service,pageSize=25,token=None):
                     added+=1
                     # delete from google cloud
                 except Exception as e:
-                    logging.error(e)
+                    logger.error(e)
         return "Done",next_page_token,added
  
 def sync_photos(service,target_num=55,batch=25):
