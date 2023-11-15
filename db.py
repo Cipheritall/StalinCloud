@@ -1,11 +1,11 @@
 import sqlite3
 import datetime
 import logging
+from config import CONFIG
 
-DATABASE_FILE = "./db/photos.db"
 
-
-def create_database(DATABASE_FILE):
+DATABASE_FILE = CONFIG["db"]
+def create_photos_database():
     try:
         conn = sqlite3.connect(DATABASE_FILE)
         cursor = conn.cursor()

@@ -10,14 +10,14 @@ from download import download_file,download_photo,download_video
 import db
 from config import CONFIG
 
-def Create_Service(client_secret_file, api_name, api_version, *scopes):
-    print(client_secret_file, api_name, api_version, scopes, sep='-')
-    CLIENT_SECRET_FILE = client_secret_file
-    API_SERVICE_NAME = api_name
-    API_VERSION = api_version
-    SCOPES = [scope for scope in scopes[0]]
-    cred = None
+API_SERVICE_NAME = 'photoslibrary'
+API_VERSION = 'v1'
+CLIENT_SECRET_FILE = './keys/client_secret.json'
+SCOPES = ['https://www.googleapis.com/auth/photoslibrary',
+          'https://www.googleapis.com/auth/photoslibrary.sharing']
 
+def Create_Service():
+    cred = None
     json_file = f'./keys/token_{API_SERVICE_NAME}_{API_VERSION}.json'
     logging.info(f"Using token {json_file}")
     if os.path.exists(json_file):
