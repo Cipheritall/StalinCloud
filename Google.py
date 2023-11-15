@@ -60,14 +60,17 @@ def convert_to_RFC_datetime(year=1900, month=1, day=1, hour=0, minute=0):
     dt = datetime.datetime(year, month, day, hour, minute, 0).isoformat() + 'Z'
     return dt
 
-
-def sync_photos(service):
-    # Retrieve the list of media items (photos) from Google Photos
-    results = service.mediaItems().list().execute()
+def photos_round(service,pageSize=25,token=None):
+    added = 0
+    if token==None:
+        results = service.mediaItems().list(pageSize=pageSize).execute()
+    else:
+        results = service.mediaItems().list(pageSize=pageSize, pageToken=token).execute()
+    next_page_token = results['nextPageToken']
     items = results.get("mediaItems", [])
-
     if not items:
         print("No media items found.")
+        return None,None
     else:
         print("Media items:")
         for item in items:
@@ -84,5 +87,17 @@ def sync_photos(service):
                 file_path = CONFIG["media_path"]+"/"+filename
                 download_file(item["baseUrl"], file_path)
                 db.mark_as_downloaded(gid,file_path)
+                added+=1
+        return "Done",next_page_token,added
 
-            
+def sync_photos(service,target_num=55,batch=25):
+    index = 0
+    # Retrieve the list of media items (photos) from Google Photos
+    status,token,added = photos_round(service,pageSize=batch)
+    if status == "Done":
+        index+=added
+    while index < target_num :
+        status,token,added = photos_round(service,pageSize=batch,token=token)
+        index+=added
+    return
+                

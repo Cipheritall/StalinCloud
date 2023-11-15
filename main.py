@@ -13,4 +13,4 @@ SCOPES = ['https://www.googleapis.com/auth/photoslibrary',
 
 db.create_database(CONFIG["db"])
 service = Create_Service(CLIENT_SECRET_FILE,API_NAME, API_VERSION, SCOPES)
-sync_photos(service)
+sync_photos(service,target_num=100)
