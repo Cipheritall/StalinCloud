@@ -49,7 +49,7 @@ def Create_Service():
 
     try:
         service = build(API_SERVICE_NAME, API_VERSION, credentials=cred,static_discovery=False)
-        logger.info(API_SERVICE_NAME, 'service created successfully')
+        logger.info(f'service created successfully {API_SERVICE_NAME}')
         return service
     except Exception as e:
         print(e)
