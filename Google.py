@@ -6,7 +6,7 @@ from google.oauth2.credentials import Credentials
 import datetime
 import json
 import logging
-from download import download_file
+from download import download_file,download_photo,download_video
 import db
 from config import CONFIG
 
@@ -82,14 +82,23 @@ def photos_round(service,pageSize=25,token=None):
                 # You can save this filename to the SQLite database or perform other actions.
                 # add to db
                 item["owner"]=CONFIG["owner"]
-                if not is_in_db:
-                    db.add_new_photo(item)
-                file_path = CONFIG["media_path"]+"/"+filename
-                download_file(item["baseUrl"], file_path)
-                db.mark_as_downloaded(gid,file_path)
-                added+=1
+                try:
+                    if not is_in_db:
+                        db.add_new_photo(item)
+                    file_path = CONFIG["media_path"]+"/"+filename
+                    if item['mimeType'].find("image")>-1:
+                        download_photo(item["baseUrl"], file_path)
+                    elif item['mimeType'].find("video")>-1:
+                        download_video(item["baseUrl"], file_path)
+                    else:
+                        download_file(item["baseUrl"], file_path)
+                    db.mark_as_downloaded(gid,file_path)
+                    added+=1
+                    # delete from google cloud
+                except Exception as e:
+                    logging.error(e)
         return "Done",next_page_token,added
-
+ 
 def sync_photos(service,target_num=55,batch=25):
     index = 0
     # Retrieve the list of media items (photos) from Google Photos

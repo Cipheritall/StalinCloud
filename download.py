@@ -12,3 +12,8 @@ def download_file(url, destination):
     except requests.exceptions.RequestException as e:
         print(f"Error downloading file: {e}")
 
+def download_photo(url, destination):
+    download_file(url+"=d", destination)
+
+def download_video(url, destination):
+    download_file(url+"=dv", destination)
