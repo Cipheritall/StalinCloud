@@ -6,6 +6,9 @@ from google.oauth2.credentials import Credentials
 import datetime
 import json
 import logging
+from download import download_file
+import db
+from config import CONFIG
 
 def Create_Service(client_secret_file, api_name, api_version, *scopes):
     print(client_secret_file, api_name, api_version, scopes, sep='-')
@@ -16,7 +19,7 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
     cred = None
 
     json_file = f'./keys/token_{API_SERVICE_NAME}_{API_VERSION}.json'
-
+    logging.info(f"Using token {json_file}")
     if os.path.exists(json_file):
         with open(json_file, 'r') as token:
             cred_data = json.load(token)
@@ -43,13 +46,13 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
 
     try:
         service = build(API_SERVICE_NAME, API_VERSION, credentials=cred,static_discovery=False)
-        print(API_SERVICE_NAME, 'service created successfully')
+        logging.info(API_SERVICE_NAME, 'service created successfully')
         return service
     except Exception as e:
         print(e)
     
-    print(cred_data)
-    print(f"is valid : {cred.valid}")
+    logging.info(cred_data)
+    logging.info(f"is valid : {cred.valid}")
     return None
 
 
@@ -68,8 +71,18 @@ def sync_photos(service):
     else:
         print("Media items:")
         for item in items:
-            filename = item["filename"]
-            print(filename)
-            # You can save this filename to the SQLite database or perform other actions.
+            gid = item["id"]
+            is_in_db = db.is_photo_in_db(gid)
+            is_downloaded =  db.is_photo_downloaded(gid)
+            if not is_downloaded:
+                filename = item["filename"]
+                # You can save this filename to the SQLite database or perform other actions.
+                # add to db
+                item["owner"]=CONFIG["owner"]
+                if not is_in_db:
+                    db.add_new_photo(item)
+                file_path = CONFIG["media_path"]+"/"+filename
+                download_file(item["baseUrl"], file_path)
+                db.mark_as_downloaded(gid,file_path)
 
             
