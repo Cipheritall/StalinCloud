@@ -25,7 +25,6 @@ if __name__ == "__main__":
     if int(args.sync)>1:
         db.create_photos_database()
         service = Google.Create_Service()
-
         Google.sync_photos(service,target_num=int(args.sync))
 
     if args.move:

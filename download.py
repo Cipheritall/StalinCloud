@@ -17,3 +17,6 @@ def download_photo(url, destination):
 
 def download_video(url, destination):
     download_file(url+"=dv", destination)
+
+def download_other(url, destination):
+    download_file(url+"=d", destination)

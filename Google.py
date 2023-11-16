@@ -6,7 +6,7 @@ from google.oauth2.credentials import Credentials
 import datetime
 import json
 import logging
-from download import download_file,download_photo,download_video
+from download import download_other,download_photo,download_video
 import db
 from config import CONFIG
 
@@ -93,7 +93,7 @@ def photos_round(service,pageSize=25,token=None):
                     elif item['mimeType'].find("video")>-1:
                         download_video(item["baseUrl"], file_path)
                     else:
-                        download_file(item["baseUrl"], file_path)
+                        download_other(item["baseUrl"], file_path)
                     db.mark_as_downloaded(gid,file_path)
                     added+=1
                     # delete from google cloud
