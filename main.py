@@ -10,7 +10,7 @@ import api
 
 if __name__ == "__main__":
     # Configure the logging module
-    logging.basicConfig(filename="log/main.log", level=logging.DEBUG)
+    logging.basicConfig(filename="log/main.log", level=logging.INFO)
     logger = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser(description="StalinCloud v0.1")
@@ -22,10 +22,13 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if int(args.sync)>1:
-        db.create_photos_database()
-        service = Google.Create_Service()
-        Google.sync_photos(service,target_num=int(args.sync))
+    if not args.sync == None :
+        if int(args.sync)>1:
+            logger.info("Running in Sync mode")
+            db.create_photos_database()
+            service = Google.Create_Service()
+            Google.sync_photos(service,target_num=int(args.sync))
 
     if args.move:
+        logger.info("Running in Move mode")
         api.move_all_photos()

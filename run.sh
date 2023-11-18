@@ -1,2 +1,2 @@
 source venv/bin/activate
-python main.py --sync 100
+python main.py --sync 5000
