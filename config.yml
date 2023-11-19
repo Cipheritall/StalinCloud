@@ -1,4 +1,5 @@
 version: v0.1
 owner: rick
-db: db/photos.db
-media_path: /media/hddCloud/stalinCloud/rick
+db: db/photos_streetu.db
+token_key : ./keys/token_photoslibrary_v1_streetu.json
+media_path: /media/hddCloud/stalinCloud/streetu

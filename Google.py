@@ -15,13 +15,13 @@ logger = logging.getLogger(__name__)
 
 API_SERVICE_NAME = 'photoslibrary'
 API_VERSION = 'v1'
-CLIENT_SECRET_FILE = './keys/client_secret.json'
+CLIENT_SECRET_FILE = CONFIG['token_key']
 SCOPES = ['https://www.googleapis.com/auth/photoslibrary',
           'https://www.googleapis.com/auth/photoslibrary.sharing']
 
 def Create_Service():
     cred = None
-    json_file = f'./keys/token_{API_SERVICE_NAME}_{API_VERSION}.json'
+    json_file = CLIENT_SECRET_FILE
     logger.info(f"Using token {json_file}")
     if os.path.exists(json_file):
         with open(json_file, 'r') as token:
@@ -62,7 +62,7 @@ def convert_to_RFC_datetime(year=1900, month=1, day=1, hour=0, minute=0):
     dt = datetime.datetime(year, month, day, hour, minute, 0).isoformat() + 'Z'
     return dt
 
-def photos_round(service,pageSize=25,token=None):
+def photos_round(service,pageSize,token=None):
     added = 0
     if token==None:
         results = service.mediaItems().list(pageSize=pageSize).execute()
@@ -101,7 +101,7 @@ def photos_round(service,pageSize=25,token=None):
                     logger.error(e)
         return "Done",next_page_token,added
  
-def sync_photos(service,target_num=55,batch=25):
+def sync_photos(service,target_num=55,batch=100):
     index = 0
     # Retrieve the list of media items (photos) from Google Photos
     status,token,added = photos_round(service,pageSize=batch)
